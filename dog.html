@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dog Customizer 🐶</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background: linear-gradient(135deg, #FFDAB9, #FFFACD);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      color: #A0522D;
+      margin-top: 20px;
+    }
+
+    canvas {
+      border: 3px solid #8B4513;
+      border-radius: 12px;
+      background: #FFF8DC;
+      margin: 20px 0;
+    }
+
+    .back-btn {
+      margin-top: 30px;
+      background: #6C757D;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 15px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .back-btn:hover {
+      background: #5A6268;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Customize Your Dog 🐶</h1>
+
+<canvas id="dogCanvas" width="400" height="400"></canvas>
+
+<button class="back-btn" onclick="location.href='index.html'">← Back to Welcome</button>
+
+<script>
+const canvas = document.getElementById('dogCanvas');
+const ctx = canvas.getContext('2d');
+
+// Dog appearance parameters (kids can edit here)
+let dogParams = {
+  headX: 200,
+  headY: 100,
+  headSize: 120,
+  leftEarX: 120,
+  rightEarX: 280,
+  earY: 100,
+  earSize: 40,
+  noseY: 220,
+  eyeY: 160,
+  eyeSize: 20
+};
+
+function drawDog() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Head
+  ctx.fillStyle = '#D2B48C';
+  ctx.beginPath();
+  ctx.arc(dogParams.headX, dogParams.headY, dogParams.headSize, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Ears
+  ctx.fillStyle = '#A0522D';
+  ctx.beginPath();
+  ctx.arc(dogParams.leftEarX, dogParams.earY, dogParams.earSize, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(dogParams.rightEarX, dogParams.earY, dogParams.earSize, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Eyes
+  ctx.fillStyle = 'white';
+  ctx.beginPath();
+  ctx.arc(dogParams.headX - 40, dogParams.eyeY, dogParams.eyeSize, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(dogParams.headX + 40, dogParams.eyeY, dogParams.eyeSize, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = 'black';
+  ctx.beginPath();
+  ctx.arc(dogParams.headX - 40, dogParams.eyeY, 8, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(dogParams.headX + 40, dogParams.eyeY, 8, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Nose
+  ctx.fillStyle = 'black';
+  ctx.beginPath();
+  ctx.arc(dogParams.headX, dogParams.noseY, 10, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+drawDog();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Among Us Customizer 🎨</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background: linear-gradient(135deg, #ff9aa2, #fad0c4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      color: #d11f45;
+      margin-top: 20px;
+    }
+
+    canvas {
+      border: 3px solid #d11f45;
+      border-radius: 12px;
+      background: #ffffff;
+      margin: 20px 0;
+    }
+
+    .back-btn {
+      margin-top: 30px;
+      background: #6C757D;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 15px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .back-btn:hover {
+      background: #5A6268;
+    }
+  </style>
+</head>
+<body>
+  <h1>Customize Your Crewmate 👩‍🚀</h1>
+  <canvas id="amongUsCanvas" width="400" height="400"></canvas>
+  <button class="back-btn" onclick="location.href='index.html'">← Back to Welcome</button>
+
+  <script>
+    const canvas = document.getElementById('amongUsCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let crewmateParams = {
+      bodyX: 200,
+      bodyY: 200,
+      bodyWidth: 100,
+      bodyHeight: 150,
+      visorX: 230,
+      visorY: 180,
+      visorWidth: 60,
+      visorHeight: 30,
+      backpackX: 140,
+      backpackY: 190,
+      backpackWidth: 50,
+      backpackHeight: 80
+    };
+
+    function drawCrewmate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Body
+      ctx.fillStyle = '#d11f45';
+      ctx.beginPath();
+      ctx.ellipse(crewmateParams.bodyX, crewmateParams.bodyY, crewmateParams.bodyWidth / 2, crewmateParams.bodyHeight / 2, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Visor
+      ctx.fillStyle = '#8fd3fe';
+      ctx.beginPath();
+      ctx.ellipse(crewmateParams.visorX, crewmateParams.visorY, crewmateParams.visorWidth / 2, crewmateParams.visorHeight / 2, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#3a9bdc';
+      ctx.stroke();
+
+      // Backpack
+      ctx.fillStyle = '#c2183b';
+      ctx.beginPath();
+      ctx.ellipse(crewmateParams.backpackX, crewmateParams.backpackY, crewmateParams.backpackWidth / 2, crewmateParams.backpackHeight / 2, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    drawCrewmate();
+  </script>
+</body>
+</html>

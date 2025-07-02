@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Frog Customizer 🎨</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background: linear-gradient(135deg, #87CEEB, #98FB98);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      color: #2E8B57;
+      margin-top: 20px;
+    }
+
+    canvas {
+      border: 3px solid #2E8B57;
+      border-radius: 12px;
+      background: #F0F8FF;
+      margin: 20px 0;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    .control-group {
+      background: #FFF;
+      border: 2px solid #E6E6FA;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #4B0082;
+    }
+
+    input[type=range] {
+      width: 100%;
+    }
+
+    .value {
+      color: #FF6B6B;
+      font-weight: bold;
+    }
+
+    .back-btn {
+      margin-top: 30px;
+      background: #6C757D;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 15px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .back-btn:hover {
+      background: #5A6268;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Customize Your Frog 🐸</h1>
+
+<canvas id="frogCanvas" width="400" height="400"></canvas>
+
+<!-- <div class="controls" id="controlPanel"></div> -->
+
+<button class="back-btn" onclick="location.href='index.html'">← Back to Welcome</button>
+
+<script>
+const canvas = document.getElementById('frogCanvas');
+const ctx = canvas.getContext('2d');
+
+// Customizable frog parameters
+let frogParams = {
+  leftEyeX: 10,
+  leftEyeY: 150,
+  rightEyeX: 280,
+  rightEyeY: 150,
+  leftEyeSize: 25,
+  rightEyeSize: 25,
+  leftCheekX: 100,
+  rightCheekX: 300,
+  cheekY: 220,
+  leftCheekSize: 15,
+  rightCheekSize: 15,
+  mouthY: 270,
+  headSize: 130
+};
+
+function drawFrog() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+
+  // Head
+  ctx.fillStyle = '#90EE90';
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, frogParams.headSize, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#228B22';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // Cheeks
+  ctx.fillStyle = '#FFB6C1';
+  ctx.beginPath();
+  ctx.arc(frogParams.leftCheekX, frogParams.cheekY, frogParams.leftCheekSize, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(frogParams.rightCheekX, frogParams.cheekY, frogParams.rightCheekSize, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Eyes
+  drawEye(frogParams.leftEyeX, frogParams.leftEyeY, frogParams.leftEyeSize);
+  drawEye(frogParams.rightEyeX, frogParams.rightEyeY, frogParams.rightEyeSize);
+
+  // Nostrils
+  ctx.fillStyle = '#228B22';
+  ctx.beginPath();
+  ctx.arc(centerX - 8, centerY - 10, 3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(centerX + 8, centerY - 10, 3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Mouth
+  ctx.strokeStyle = '#228B22';
+  ctx.lineWidth = 4;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.arc(centerX, frogParams.mouthY, 40, 0.2 * Math.PI, 0.8 * Math.PI);
+  ctx.stroke();
+
+  // Tongue
+  if (Math.random() > 0.7) {
+    ctx.fillStyle = '#FF69B4';
+    ctx.beginPath();
+    ctx.ellipse(centerX, frogParams.mouthY + 10, 8, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function drawEye(x, y, size) {
+  // White part
+  ctx.fillStyle = 'white';
+  ctx.beginPath();
+  ctx.arc(x, y, size, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Outline
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(x, y, size, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Pupil
+  ctx.fillStyle = '#000';
+  ctx.beginPath();
+  ctx.arc(x, y, size * 0.4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Highlight
+  ctx.fillStyle = 'white';
+  ctx.beginPath();
+  ctx.arc(x - 5, y - 5, size * 0.15, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function setupSliders() {
+  const panel = document.getElementById('controlPanel');
+  panel.innerHTML = ''; // Clear previous
+
+  for (let key in frogParams) {
+    const group = document.createElement('div');
+    group.className = 'control-group';
+
+    const label = document.createElement('label');
+    label.htmlFor = key;
+    label.innerHTML = `${key}: <span class="value" id="${key}Value">${frogParams[key]}</span>`;
+    group.appendChild(label);
+
+    const input = document.createElement('input');
+    input.type = 'range';
+    input.id = key;
+    input.min = 0;
+    input.max = 400;
+    input.value = frogParams[key];
+    input.addEventListener('input', () => {
+      frogParams[key] = parseInt(input.value);
+      document.getElementById(`${key}Value`).textContent = input.value;
+      drawFrog();
+    });
+
+    group.appendChild(input);
+    panel.appendChild(group);
+  }
+}
+
+drawFrog();
+setupSliders();
+</script>
+</body>
+</html>

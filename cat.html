@@ -1,143 +1,931 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cat Customizer 🐱</title>
-  <style>
-    body {
-      font-family: 'Comic Sans MS', cursive;
-      background: linear-gradient(135deg, #FFC0CB, #FFF8DC);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px;
-      min-height: 100vh;
-      margin: 0;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XY Position Cat Game 🐱</title>
+    <style>
+      body {
+        font-family: "Comic Sans MS", cursive;
+        background: linear-gradient(135deg, #ffc0cb, #fff8dc);
+        margin: 0;
+        min-height: 100vh;
+        padding: 0;
+      }
 
-    h1 {
-      color: #FF1493;
-      margin-top: 20px;
-    }
+      .back-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        transition: all 0.3s;
+      }
 
-    canvas {
-      border: 3px solid #FF69B4;
-      border-radius: 12px;
-      background: #FFF0F5;
-      margin: 20px 0;
-    }
+      .back-btn:hover {
+        background: white;
+        transform: scale(1.1);
+      }
 
-    .back-btn {
-      margin-top: 30px;
-      background: #6C757D;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 15px;
-      cursor: pointer;
-    }
+      h1 {
+        color: #ff1493;
+        margin: 0;
+        text-align: center;
+        padding: 20px 0;
+      }
 
-    .back-btn:hover {
-      background: #5A6268;
-    }
-  </style>
-</head>
-<body>
+      .main-container {
+        display: flex;
+        gap: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        min-height: calc(100vh - 100px);
+      }
 
-<h1>Customize Your Cat 🐱</h1>
+      .left-column {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
 
-<canvas id="catCanvas" width="400" height="400"></canvas>
+      .canvas-area {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        width: 406px; /* canvas width + border */
+        margin: 0 auto;
+      }
 
-<button class="back-btn" onclick="location.href='index.html'">← Back to Welcome</button>
+      .right-column {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
 
-<script>
-const canvas = document.getElementById('catCanvas');
-const ctx = canvas.getContext('2d');
+      .info-panel {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        flex: 1;
+      }
 
-let catParams = {
-  headX: 200,
-  headY: 220,
-  headSize: 120,
-  leftEarX: 120,
-  rightEarX: 280,
-  earY: 100,
-  earSize: 40,
-  eyeY: 180,
-  eyeSize: 18,
-  noseY: 220,
-  whiskerLength: 40
-};
+      canvas {
+        border: 3px solid #ff69b4;
+        border-radius: 12px;
+        background: #fff0f5;
+        position: relative;
+      }
 
-function drawCat() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+      .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        opacity: 0.3;
+        z-index: 1;
+      }
 
-  // Head
-  ctx.fillStyle = '#FFDAB9';
-  ctx.beginPath();
-  ctx.arc(catParams.headX, catParams.headY, catParams.headSize, 0, Math.PI * 2);
-  ctx.fill();
+      .controls-panel {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        height: fit-content;
+      }
 
-  // Ears
-  ctx.fillStyle = '#FFB6C1';
-  ctx.beginPath();
-  ctx.moveTo(catParams.leftEarX, catParams.earY);
-  ctx.lineTo(catParams.leftEarX - 20, catParams.earY - 40);
-  ctx.lineTo(catParams.leftEarX + 20, catParams.earY - 40);
-  ctx.closePath();
-  ctx.fill();
+      .instructions {
+        background: #ffe4e1;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border-left: 4px solid #ff69b4;
+      }
 
-  ctx.beginPath();
-  ctx.moveTo(catParams.rightEarX, catParams.earY);
-  ctx.lineTo(catParams.rightEarX - 20, catParams.earY - 40);
-  ctx.lineTo(catParams.rightEarX + 20, catParams.earY - 40);
-  ctx.closePath();
-  ctx.fill();
+      .instructions h3 {
+        color: #ff1493;
+        margin: 0 0 10px 0;
+      }
 
-  // Eyes
-  ctx.fillStyle = 'white';
-  ctx.beginPath();
-  ctx.arc(catParams.headX - 35, catParams.eyeY, catParams.eyeSize, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(catParams.headX + 35, catParams.eyeY, catParams.eyeSize, 0, Math.PI * 2);
-  ctx.fill();
+      .coordinate-info {
+        background: #fff9e6;
+        padding: 10px;
+        border-radius: 8px;
+        margin: 10px 0;
+        border: 2px solid #ffd700;
+      }
 
-  ctx.fillStyle = 'black';
-  ctx.beginPath();
-  ctx.arc(catParams.headX - 35, catParams.eyeY, 5, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(catParams.headX + 35, catParams.eyeY, 5, 0, Math.PI * 2);
-  ctx.fill();
+      .part-controls {
+        margin: 15px 0;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid #e9ecef;
+      }
 
-  // Nose
-  ctx.fillStyle = 'pink';
-  ctx.beginPath();
-  ctx.moveTo(catParams.headX, catParams.noseY);
-  ctx.lineTo(catParams.headX - 7, catParams.noseY + 10);
-  ctx.lineTo(catParams.headX + 7, catParams.noseY + 10);
-  ctx.closePath();
-  ctx.fill();
+      .part-controls h4 {
+        margin: 0 0 10px 0;
+        color: #495057;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
 
-  // Whiskers
-  ctx.strokeStyle = '#000';
-  ctx.lineWidth = 2;
-  for (let i = -1; i <= 1; i++) {
-    ctx.beginPath();
-    ctx.moveTo(catParams.headX - 20, catParams.noseY + i * 6);
-    ctx.lineTo(catParams.headX - 20 - catParams.whiskerLength, catParams.noseY + i * 6);
-    ctx.stroke();
+      .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #ff6b6b;
+        transition: background-color 0.3s;
+      }
 
-    ctx.beginPath();
-    ctx.moveTo(catParams.headX + 20, catParams.noseY + i * 6);
-    ctx.lineTo(catParams.headX + 20 + catParams.whiskerLength, catParams.noseY + i * 6);
-    ctx.stroke();
-  }
-}
+      .status-indicator.correct {
+        background: #51cf66;
+      }
 
-drawCat();
-</script>
+      .control-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 8px 0;
+      }
 
-</body>
+      .control-group label {
+        min-width: 20px;
+        font-weight: bold;
+        color: #495057;
+      }
+
+      .slider {
+        flex: 1;
+        height: 8px;
+        border-radius: 5px;
+        background: #ddd;
+        outline: none;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+
+      .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #ff69b4;
+        cursor: pointer;
+      }
+
+      .slider::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #ff69b4;
+        cursor: pointer;
+        border: none;
+      }
+
+      .coord-input {
+        width: 50px;
+        padding: 5px;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        text-align: center;
+        font-size: 14px;
+      }
+
+      .coord-input:focus {
+        border-color: #ff69b4;
+        outline: none;
+      }
+
+      .game-buttons {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin: 20px 0;
+      }
+
+      .btn {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: all 0.3s;
+        min-width: 100px;
+      }
+
+      .btn-shuffle {
+        background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+        color: white;
+      }
+
+      .btn-reset {
+        background: linear-gradient(45deg, #ff69b4, #ff1493);
+        color: white;
+      }
+
+      .btn-hint {
+        background: linear-gradient(45deg, #ffd93d, #ffe066);
+        color: #333;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .score-display {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(45deg, #ffb6c1, #ffc0cb);
+        color: #ff1493;
+        padding: 20px;
+        border-radius: 15px;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        border: 3px solid #ff69b4;
+        z-index: 1001;
+        min-width: 150px;
+      }
+
+      .congratulations-popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #ff69b4, #ffd93d);
+        color: white;
+        padding: 40px;
+        border-radius: 20px;
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        z-index: 2000;
+        display: none;
+        animation: popIn 0.5s ease-out;
+      }
+
+      @keyframes popIn {
+        0% {
+          transform: translate(-50%, -50%) scale(0.3);
+          opacity: 0;
+        }
+        80% {
+          transform: translate(-50%, -50%) scale(1.1);
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+      }
+
+      .congratulations-popup h2 {
+        margin: 0 0 20px 0;
+        font-size: 32px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .congratulations-popup .emoji {
+        font-size: 48px;
+        margin-bottom: 15px;
+        display: block;
+      }
+
+      .hint-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: 2;
+      }
+
+      .hint-overlay.show {
+        opacity: 0.4;
+      }
+
+      @media (max-width: 768px) {
+        .main-container {
+          flex-direction: column;
+          padding: 10px;
+        }
+
+        .canvas-area {
+          width: 356px; /* smaller canvas + border for mobile */
+        }
+
+        canvas {
+          width: 350px;
+          height: 350px;
+        }
+
+        .back-btn {
+          width: 40px;
+          height: 40px;
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button class="back-btn" onclick="location.href='index.html'">←</button>
+
+    <!-- Congratulations Popup -->
+    <div class="congratulations-popup" id="congratulationsPopup">
+      <span class="emoji">🎉</span>
+      <h2>Congratulations!</h2>
+      <p>You've assembled your adorable cat!</p>
+      <p>Great job learning XY coordinates! 🐱</p>
+    </div>
+
+    <h1>🎯 XY Position Cat Game</h1>
+
+    <div class="main-container">
+      <div class="left-column">
+        <div class="canvas-area">
+          <canvas id="catCanvas" width="400" height="400"></canvas>
+          <canvas
+            class="grid-overlay"
+            id="gridCanvas"
+            width="400"
+            height="400"
+          ></canvas>
+          <canvas
+            class="hint-overlay"
+            id="hintCanvas"
+            width="400"
+            height="400"
+          ></canvas>
+        </div>
+
+        <div class="info-panel">
+          <div class="instructions">
+            <h3>🎮 How to Play</h3>
+            <p><strong>X</strong> = Left ↔ Right position</p>
+            <p><strong>Y</strong> = Up ↕ Down position</p>
+            <p>📱 Use sliders & inputs below</p>
+            <p>🖱️ Or drag parts directly on canvas!</p>
+            <p>🎯 Get all cat parts in the right spots!</p>
+          </div>
+
+          <div class="coordinate-info">
+            <strong>📍 Mouse Position:</strong> X: <span id="mouseX">0</span>,
+            Y:
+            <span id="mouseY">0</span>
+          </div>
+
+          <div class="game-buttons">
+            <button class="btn btn-shuffle" onclick="shuffleParts()">
+              🔀 Shuffle
+            </button>
+            <button class="btn btn-reset" onclick="resetParts()">
+              🔄 Reset
+            </button>
+            <button class="btn btn-hint" onclick="toggleHints()">
+              💡 Hints
+            </button>
+          </div>
+
+          <div class="score-display">
+            Score: <span id="scoreValue">0</span> / <span id="maxScore">6</span>
+            <div style="font-size: 14px; margin-top: 5px">
+              <span id="partsCorrect">0</span> cat parts in the right place! 🐱
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-column">
+        <div class="controls-panel">
+          <div id="partControls">
+            <!-- Part controls will be dynamically generated -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Game state and configuration
+      const canvas = document.getElementById("catCanvas");
+      const ctx = canvas.getContext("2d");
+      const gridCanvas = document.getElementById("gridCanvas");
+      const gridCtx = gridCanvas.getContext("2d");
+      const hintCanvas = document.getElementById("hintCanvas");
+      const hintCtx = hintCanvas.getContext("2d");
+
+      let showHints = false;
+      let score = 0;
+      let previousScore = 0;
+      let gameStarted = false;
+
+      // Cat parts with correct positions and current positions
+      const animalParts = {
+        head: {
+          name: "Head 🐱",
+          correctX: 200,
+          correctY: 220,
+          currentX: 200,
+          currentY: 220,
+          size: 60,
+          tolerance: 20,
+          color: "#FFDAB9",
+        },
+        leftEar: {
+          name: "Left Ear 👂",
+          correctX: 170,
+          correctY: 170,
+          currentX: 170,
+          currentY: 170,
+          size: 20,
+          tolerance: 18,
+          color: "#FFB6C1",
+        },
+        rightEar: {
+          name: "Right Ear 👂",
+          correctX: 230,
+          correctY: 170,
+          currentX: 230,
+          currentY: 170,
+          size: 20,
+          tolerance: 18,
+          color: "#FFB6C1",
+        },
+        leftEye: {
+          name: "Left Eye 👁",
+          correctX: 185,
+          correctY: 205,
+          currentX: 185,
+          currentY: 205,
+          size: 9,
+          tolerance: 15,
+          color: "#000000",
+        },
+        rightEye: {
+          name: "Right Eye 👁",
+          correctX: 215,
+          correctY: 205,
+          currentX: 215,
+          currentY: 205,
+          size: 9,
+          tolerance: 15,
+          color: "#000000",
+        },
+        nose: {
+          name: "Nose 👃",
+          correctX: 200,
+          correctY: 225,
+          currentX: 200,
+          currentY: 225,
+          size: 6,
+          tolerance: 12,
+          color: "#FF69B4",
+        },
+      };
+
+      // Sound Effects
+      function playCorrectSound() {
+        // Create a short beep sound for correct placement
+        const audioContext = new (window.AudioContext ||
+          window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.type = "sine";
+
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(
+          0.01,
+          audioContext.currentTime + 0.3
+        );
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.3);
+      }
+
+      function playVictorySound() {
+        // Create a cheerful victory melody
+        const audioContext = new (window.AudioContext ||
+          window.webkitAudioContext)();
+        const notes = [523.25, 659.25, 783.99, 1046.5]; // C, E, G, C (major chord)
+
+        notes.forEach((freq, index) => {
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+
+          oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+          oscillator.type = "sine";
+
+          const startTime = audioContext.currentTime + index * 0.2;
+          gainNode.gain.setValueAtTime(0.3, startTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.4);
+
+          oscillator.start(startTime);
+          oscillator.stop(startTime + 0.4);
+        });
+      }
+
+      function showCongratulations() {
+        const popup = document.getElementById("congratulationsPopup");
+        popup.style.display = "block";
+        playVictorySound();
+
+        // Auto-hide after 4 seconds
+        setTimeout(() => {
+          popup.style.display = "none";
+        }, 4000);
+      }
+
+      // Initialize the game (same functions as xy-position-game.html but adapted for cat)
+      function initGame() {
+        drawGrid();
+        createPartControls();
+        drawAnimal();
+        updateScore();
+        addMouseTracking();
+      }
+
+      function drawGrid() {
+        gridCtx.clearRect(0, 0, gridCanvas.width, gridCanvas.height);
+        gridCtx.strokeStyle = "#E0E0E0";
+        gridCtx.lineWidth = 1;
+        for (let x = 0; x <= canvas.width; x += 20) {
+          gridCtx.beginPath();
+          gridCtx.moveTo(x, 0);
+          gridCtx.lineTo(x, canvas.height);
+          gridCtx.stroke();
+          if (x % 40 === 0) {
+            gridCtx.fillStyle = "#999";
+            gridCtx.font = "10px Arial";
+            gridCtx.fillText(x.toString(), x + 2, 12);
+          }
+        }
+        for (let y = 0; y <= canvas.height; y += 20) {
+          gridCtx.beginPath();
+          gridCtx.moveTo(0, y);
+          gridCtx.lineTo(canvas.width, y);
+          gridCtx.stroke();
+          if (y % 40 === 0) {
+            gridCtx.fillStyle = "#999";
+            gridCtx.font = "10px Arial";
+            gridCtx.fillText(y.toString(), 2, y - 2);
+          }
+        }
+      }
+
+      function createPartControls() {
+        const container = document.getElementById("partControls");
+        container.innerHTML = "";
+        Object.keys(animalParts).forEach((partKey) => {
+          const part = animalParts[partKey];
+          const partDiv = document.createElement("div");
+          partDiv.className = "part-controls";
+          partDiv.innerHTML = `
+          <h4><div class="status-indicator" id="status-${partKey}"></div>${part.name}</h4>
+          <div class="control-group">
+            <label>X:</label>
+            <input type="range" class="slider" min="10" max="390" value="${part.currentX}" 
+                   oninput="updatePartPosition('${partKey}', 'x', this.value)">
+            <input type="number" class="coord-input" min="10" max="390" value="${part.currentX}" 
+                   onchange="updatePartPosition('${partKey}', 'x', this.value)" id="x-${partKey}">
+          </div>
+          <div class="control-group">
+            <label>Y:</label>
+            <input type="range" class="slider" min="10" max="390" value="${part.currentY}" 
+                   oninput="updatePartPosition('${partKey}', 'y', this.value)">
+            <input type="number" class="coord-input" min="10" max="390" value="${part.currentY}" 
+                   onchange="updatePartPosition('${partKey}', 'y', this.value)" id="y-${partKey}">
+          </div>`;
+          container.appendChild(partDiv);
+        });
+      }
+
+      function updatePartPosition(partKey, axis, value) {
+        const part = animalParts[partKey];
+        const numValue = parseInt(value);
+        if (axis === "x") {
+          part.currentX = numValue;
+          document.querySelector(`#x-${partKey}`).value = numValue;
+          document.querySelector(`input[oninput*="'${partKey}', 'x'"]`).value =
+            numValue;
+        } else {
+          part.currentY = numValue;
+          document.querySelector(`#y-${partKey}`).value = numValue;
+          document.querySelector(`input[oninput*="'${partKey}', 'y'"]`).value =
+            numValue;
+        }
+
+        drawAnimal();
+        updateScore();
+      }
+
+      function drawAnimal() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        Object.keys(animalParts).forEach((partKey) => {
+          const part = animalParts[partKey];
+          const isCorrect = isPartCorrect(partKey);
+          if (isCorrect) {
+            ctx.shadowColor = "#51CF66";
+            ctx.shadowBlur = 10;
+          } else {
+            ctx.shadowColor = "transparent";
+            ctx.shadowBlur = 0;
+          }
+          drawPart(part, partKey);
+        });
+        ctx.shadowColor = "transparent";
+        ctx.shadowBlur = 0;
+        drawWhiskers();
+      }
+
+      function drawPart(part, partKey) {
+        ctx.fillStyle = part.color;
+        switch (partKey) {
+          case "head":
+            ctx.beginPath();
+            ctx.arc(part.currentX, part.currentY, part.size, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+          case "leftEar":
+          case "rightEar":
+            ctx.beginPath();
+            ctx.moveTo(part.currentX, part.currentY - part.size);
+            ctx.lineTo(part.currentX - part.size, part.currentY + part.size);
+            ctx.lineTo(part.currentX + part.size, part.currentY + part.size);
+            ctx.closePath();
+            ctx.fill();
+            break;
+          case "leftEye":
+          case "rightEye":
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            ctx.arc(
+              part.currentX,
+              part.currentY,
+              part.size + 6,
+              0,
+              Math.PI * 2
+            );
+            ctx.fill();
+            ctx.fillStyle = part.color;
+            ctx.beginPath();
+            ctx.arc(part.currentX, part.currentY, part.size, 0, Math.PI * 2);
+            ctx.fill();
+            break;
+          case "nose":
+            ctx.beginPath();
+            ctx.moveTo(part.currentX, part.currentY - part.size);
+            ctx.lineTo(part.currentX - part.size, part.currentY + part.size);
+            ctx.lineTo(part.currentX + part.size, part.currentY + part.size);
+            ctx.closePath();
+            ctx.fill();
+            break;
+        }
+      }
+
+      function drawWhiskers() {
+        const head = animalParts.head;
+        const nose = animalParts.nose;
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 2;
+        for (let i = -1; i <= 1; i++) {
+          ctx.beginPath();
+          ctx.moveTo(head.currentX - 30, nose.currentY + i * 8);
+          ctx.lineTo(head.currentX - 60, nose.currentY + i * 8);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(head.currentX + 30, nose.currentY + i * 8);
+          ctx.lineTo(head.currentX + 60, nose.currentY + i * 8);
+          ctx.stroke();
+        }
+      }
+
+      function isPartCorrect(partKey) {
+        const part = animalParts[partKey];
+        const xDiff = Math.abs(part.currentX - part.correctX);
+        const yDiff = Math.abs(part.currentY - part.correctY);
+        return xDiff <= part.tolerance && yDiff <= part.tolerance;
+      }
+
+      function updateScore() {
+        let correctParts = 0;
+        const totalParts = Object.keys(animalParts).length;
+        Object.keys(animalParts).forEach((partKey) => {
+          const isCorrect = isPartCorrect(partKey);
+          const statusIndicator = document.getElementById(`status-${partKey}`);
+          if (isCorrect) {
+            correctParts++;
+            statusIndicator.className = "status-indicator correct";
+          } else {
+            statusIndicator.className = "status-indicator";
+          }
+        });
+
+        // Play sound if score increased
+        if (correctParts > previousScore && gameStarted) {
+          playCorrectSound();
+        }
+
+        previousScore = score;
+        score = correctParts;
+        document.getElementById("scoreValue").textContent = score;
+        document.getElementById("maxScore").textContent = totalParts;
+        document.getElementById("partsCorrect").textContent = correctParts;
+
+        if (score === totalParts && gameStarted) {
+          setTimeout(() => {
+            showCongratulations();
+          }, 500);
+        }
+      }
+
+      function shuffleParts() {
+        gameStarted = true;
+
+        Object.keys(animalParts).forEach((partKey) => {
+          const part = animalParts[partKey];
+          // Make it easier by placing parts closer to their correct positions
+          // Only move them 40-80 pixels away from the correct spot
+          const offsetRange = 60;
+          const minOffset = 25;
+
+          // Random direction and distance
+          const angle = Math.random() * 2 * Math.PI;
+          const distance =
+            minOffset + Math.random() * (offsetRange - minOffset);
+
+          let newX = part.correctX + Math.cos(angle) * distance;
+          let newY = part.correctY + Math.sin(angle) * distance;
+
+          // Keep parts within canvas bounds
+          newX = Math.max(30, Math.min(canvas.width - 30, newX));
+          newY = Math.max(30, Math.min(canvas.height - 30, newY));
+
+          part.currentX = Math.round(newX);
+          part.currentY = Math.round(newY);
+          updateUIControls(partKey);
+        });
+        drawAnimal();
+        updateScore();
+      }
+
+      function resetParts() {
+        Object.keys(animalParts).forEach((partKey) => {
+          const part = animalParts[partKey];
+          part.currentX = part.correctX;
+          part.currentY = part.correctY;
+          updateUIControls(partKey);
+        });
+        drawAnimal();
+        updateScore();
+      }
+
+      function toggleHints() {
+        showHints = !showHints;
+        const hintOverlay = document.querySelector(".hint-overlay");
+        if (showHints) {
+          drawHints();
+          hintOverlay.classList.add("show");
+        } else {
+          hintCtx.clearRect(0, 0, hintCanvas.width, hintCanvas.height);
+          hintOverlay.classList.remove("show");
+        }
+      }
+
+      function drawHints() {
+        hintCtx.clearRect(0, 0, hintCanvas.width, hintCanvas.height);
+        hintCtx.strokeStyle = "#51CF66";
+        hintCtx.lineWidth = 3;
+        hintCtx.setLineDash([5, 5]);
+        Object.keys(animalParts).forEach((partKey) => {
+          const part = animalParts[partKey];
+          hintCtx.beginPath();
+          hintCtx.arc(
+            part.correctX,
+            part.correctY,
+            part.size + 5,
+            0,
+            Math.PI * 2
+          );
+          hintCtx.stroke();
+        });
+        hintCtx.setLineDash([]);
+      }
+
+      // Drag functionality (simplified version)
+      let isDragging = false;
+      let draggedPart = null;
+      let dragOffset = { x: 0, y: 0 };
+
+      function addMouseTracking() {
+        canvas.addEventListener("mousemove", (e) => {
+          const rect = canvas.getBoundingClientRect();
+          const x = Math.floor(e.clientX - rect.left);
+          const y = Math.floor(e.clientY - rect.top);
+          document.getElementById("mouseX").textContent = x;
+          document.getElementById("mouseY").textContent = y;
+          if (isDragging && draggedPart) {
+            const part = animalParts[draggedPart];
+            part.currentX = Math.max(10, Math.min(390, x - dragOffset.x));
+            part.currentY = Math.max(10, Math.min(390, y - dragOffset.y));
+            updateUIControls(draggedPart);
+            drawAnimal();
+            updateScore();
+          }
+          canvas.style.cursor = getPartAtPosition(x, y) ? "pointer" : "default";
+        });
+
+        canvas.addEventListener("mousedown", (e) => {
+          const rect = canvas.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const partKey = getPartAtPosition(x, y);
+          if (partKey) {
+            isDragging = true;
+            draggedPart = partKey;
+            const part = animalParts[partKey];
+            dragOffset.x = x - part.currentX;
+            dragOffset.y = y - part.currentY;
+          }
+        });
+
+        canvas.addEventListener("mouseup", () => {
+          if (isDragging && draggedPart) {
+            const part = animalParts[draggedPart];
+
+            isDragging = false;
+            draggedPart = null;
+          }
+        });
+      }
+
+      function getPartAtPosition(x, y) {
+        const partKeys = Object.keys(animalParts).reverse();
+        for (let partKey of partKeys) {
+          const part = animalParts[partKey];
+          const distance = Math.sqrt(
+            (x - part.currentX) ** 2 + (y - part.currentY) ** 2
+          );
+          if (distance <= part.size + 10) return partKey;
+        }
+        return null;
+      }
+
+      function updateUIControls(partKey) {
+        const part = animalParts[partKey];
+        document.querySelector(`#x-${partKey}`).value = Math.round(
+          part.currentX
+        );
+        document.querySelector(`#y-${partKey}`).value = Math.round(
+          part.currentY
+        );
+        document.querySelector(`input[oninput*="'${partKey}', 'x'"]`).value =
+          Math.round(part.currentX);
+        document.querySelector(`input[oninput*="'${partKey}', 'y'"]`).value =
+          Math.round(part.currentY);
+      }
+
+      function celebrate() {
+        const originalBg = canvas.style.background;
+        let flashCount = 0;
+        const flashInterval = setInterval(() => {
+          canvas.style.background =
+            flashCount % 2 === 0 ? "#FFD700" : "#FFF0F5";
+          flashCount++;
+          if (flashCount > 6) {
+            clearInterval(flashInterval);
+            canvas.style.background = originalBg;
+          }
+        }, 200);
+      }
+
+      window.onload = initGame;
+    </script>
+  </body>
 </html>
